@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import ViewPollForm from './ViewPollForm'
+import SubmitAnswerForm from './SubmitAnswerForm'
+
+export const VIEW_POLL = 'VIEW_POLL'
+export const SUBMIT_ANSWER = 'SUBMIT_ANSWER'
 
 class Question extends Component {
 	render() {
-		const { id, users, questions } = this.props
-		const question = questions[id]
-		const { name, author, optionOne } = question
-		const user = users[question.author]
+		const { author } = this.props.question
+		const user = this.props.users[author]
+		const { answers } = this.props.authedUser
+		console.log("* * *", answers)
 		return (
 			<div className='question-container'>
 				<span className='question-header'>{user.name} asks: </span>
@@ -17,23 +22,19 @@ class Question extends Component {
 						height='70'
 					/>
 					<h5>Would you rather</h5>
-					<span className='option-text'>{optionOne.text}</span>
-					<div className='view-poll-btn'>
-						<button>
-							View Poll
-						</button>
-					</div>
+					{this.props.mode === VIEW_POLL
+						? <ViewPollForm question={this.props.question}/>
+						: <SubmitAnswerForm question={this.props.question}/>
+					}
 				</div>
 			</div>
 		)
 	}
 }
 
-function mapStateToProps({ users, questions, authedUser }) {
+function mapStateToProps({ users, authedUser }) {
 	return {
-		users,
-		questions,
-		authedUser
+		users
 	}
 }
 

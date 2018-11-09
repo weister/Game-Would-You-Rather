@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import QuestionList from './QuestionList'
 
 class Dashboard extends Component {
 	state = {
@@ -7,7 +9,6 @@ class Dashboard extends Component {
 	}
 
 	toggle(tab) {
-		console.log("*** clicked ", tab)
 		if(this.state.activeTab !== tab) {
 			this.setState({
 				activeTab: tab
@@ -16,7 +17,7 @@ class Dashboard extends Component {
 	}
 
 	render() {
-		console.log("*** state ", this.state)
+		const { users, questions, authedUser } = this.props
 		return (
 			<div>
         <Nav>
@@ -40,10 +41,18 @@ class Dashboard extends Component {
 
         <TabContent activeTab={this.state.activeTab}>
         	<TabPane tabId='1'>
-        		TAB1
+        		<QuestionList
+        			authedUser={users[authedUser]}
+        			questions={questions}
+        			answered={false}
+        		/>
         	</TabPane>
 					<TabPane tabId='2'>
-						TAB2
+						<QuestionList
+							authedUser={users[authedUser]}
+							questions={questions}
+							answered={true}
+						/>
         	</TabPane>        	
         </TabContent>
 
@@ -52,4 +61,12 @@ class Dashboard extends Component {
 	}
 }
 
-export default Dashboard
+function mapStateToProps({ users, questions, authedUser  }) {
+	return {
+		users,
+		questions,
+		authedUser
+	}
+}
+
+export default connect(mapStateToProps)(Dashboard)
